@@ -10,9 +10,9 @@
 #define FJTableViewHeader_h
 
 // TableView
-#import <FJCustomizedView/FJTableView.h>
-#import <FJCustomizedView/FJCell.h>
-#import <FJCustomizedView/FJHeaderView.h>
-#import <FJCustomizedView/FJMultiDataSource.h>
+#import <FJTableView/FJTableView.h>
+#import <FJTableView/FJCell.h>
+#import <FJTableView/FJHeaderView.h>
+#import <FJTableView/FJMultiDataSource.h>
 
 #endif /* FJTableViewHeader_h */
