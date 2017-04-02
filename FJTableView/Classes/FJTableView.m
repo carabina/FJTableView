@@ -8,6 +8,7 @@
 
 #import "FJTableView.h"
 #import "FJCell.h"
+#import "NSMutableArray+FJTableView.h"
 #import <Masonry/Masonry.h>
 
 #define COLOR_F3F3F9 [UIColor colorWithRed:(243.0/255.0) green:(243.0/255.0) blue:(249.0/255.0) alpha:1.0]
@@ -22,7 +23,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     [target.delegate fjheader_actionRespond:action from:target]; \
 }
 
-@interface FJTableView()<UITableViewDataSource,UITableViewDelegate,FJTableViewDelegate,FJCellDelegate,FJHeaderViewDelegate>
+@interface FJTableView()<UITableViewDataSource,UITableViewDelegate,FJCellDelegate,FJHeaderViewDelegate>
 
 // TableView
 @property (nonatomic, strong) UITableView *innerTableView;
@@ -39,6 +40,12 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 @property (nonatomic, assign) CGFloat end_y;
 // scrollview上次滚动的y值(contentOffset)
 @property (nonatomic, assign) CGFloat last_y;
+
+// Cell的编辑风格
+@property (nonatomic, assign) UITableViewCellEditingStyle innerCellEditingStyle;
+
+// 是否带Section Header View
+@property (nonatomic, assign) BOOL innerSectionEnabled;
 
 @end
 
@@ -88,43 +95,54 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 /*************************
  *        设置属性        *
  *************************/
-- (void)setFj_allowEditing:(BOOL)fj_allowEditing {
-    _fj_allowEditing = fj_allowEditing;
-    self.innerTableView.editing = fj_allowEditing;
-}
-
-
-- (void)setFj_allowMoveCell:(BOOL)fj_allowMoveCell {
-    _fj_allowMoveCell = fj_allowMoveCell;
-    if (fj_allowMoveCell) {
-        [self.innerTableView setEditing:YES animated:NO];
-    }
-}
-
 - (void)setFj_editingStyle:(FJ_CellEditingStyle)fj_editingStyle {
     _fj_editingStyle = fj_editingStyle;
     switch (fj_editingStyle) {
         case FJ_CellEditingStyle_Insert:
         {
             self.innerTableView.editing = YES;
-        }
+            self.innerCellEditingStyle = UITableViewCellEditingStyleInsert;
             break;
+        }
         case FJ_CellEditingStyle_MultiSelection:
         {
             self.innerTableView.editing = YES;
-            self.innerTableView.allowsMultipleSelectionDuringEditing = YES;
+            self.innerCellEditingStyle = UITableViewCellEditingStyleInsert | UITableViewCellEditingStyleDelete;
+            break;
+        }
+        case FJ_CellEditingStyle_Deletion_Swipe:
+        case FJ_CellEditingStyle_Deletion_SwipeWConfirm:
+        {
+            self.innerTableView.editing = NO;
+            self.innerCellEditingStyle = UITableViewCellEditingStyleDelete;
+            break;
+        }
+        case FJ_CellEditingStyle_Deletion_Explicit:
+        case FJ_CellEditingStyle_Deletion_ExplicitWConfirm:
+        {
+            self.innerTableView.editing = YES;
+            self.innerCellEditingStyle = UITableViewCellEditingStyleDelete;
+            break;
+        }
+        case FJ_CellEditingStyle_Move:
+        {
+            self.innerTableView.editing = YES;
+            self.innerCellEditingStyle = UITableViewCellEditingStyleNone;
             break;
         }
         case FJ_CellEditingStyle_None:
-        case FJ_CellEditingStyle_Deletion:
         default:
+        {
+            self.innerTableView.editing = NO;
+            self.innerCellEditingStyle = UITableViewCellEditingStyleNone;
             break;
+        }
     }
 }
 
-- (void)setFj_cellSeperateType:(UITableViewCellSeparatorStyle)fj_cellSeperateType {
-    _fj_cellSeperateType = fj_cellSeperateType;
-    [_innerTableView setSeparatorStyle:fj_cellSeperateType];
+- (void)setFj_cellSeperatorStyle:(UITableViewCellSeparatorStyle)fj_cellSeperatorStyle {
+    _fj_cellSeperatorStyle = fj_cellSeperatorStyle;
+    self.innerTableView.separatorStyle = fj_cellSeperatorStyle;
 }
 
 - (void)setFj_view_bgColor:(UIColor *)fj_view_bgColor {
@@ -160,26 +178,26 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
  *************************/
 // 生成FJTableView（默认）
 + (FJTableView*)defaultFJTableView {
-    return [self FJTableView:CGRectZero allowMultiStyle:NO editStyle:FJ_CellEditingStyle_None seperateType:UITableViewCellSeparatorStyleNone bgColor:COLOR_F3F3F9 delegate:nil];
+    return [FJTableView FJTableView:CGRectZero editStyle:FJ_CellEditingStyle_None seperatorStyle:UITableViewCellSeparatorStyleNone bgColor:COLOR_F3F3F9];
 }
 
 // 生成FJTableView（自定义）
-+ (FJTableView*)FJTableView:(CGRect)frame allowMultiStyle:(BOOL)allowMultiStyle editStyle:(FJ_CellEditingStyle)editStyle seperateType:(UITableViewCellSeparatorStyle)seperateType bgColor:(UIColor*)bgColor delegate:(id<FJTableViewDelegate>)delegate {
++ (FJTableView*)FJTableView:(CGRect)frame editStyle:(FJ_CellEditingStyle)editStyle seperatorStyle:(UITableViewCellSeparatorStyle)seperatorStyle bgColor:(UIColor*)bgColor {
     
     FJTableView *fjTableView = [[FJTableView alloc] initWithFrame:frame];
     
     // 保存和设置属性
-    fjTableView.delegate = delegate;
-    fjTableView.fj_allowMultiTableView = allowMultiStyle;
     fjTableView.fj_editingStyle = editStyle;
-    fjTableView.fj_cellSeperateType = seperateType;
+    fjTableView.fj_cellSeperatorStyle = seperatorStyle;
     fjTableView.fj_view_bgColor = COLOR_F3F3F9;
     if (bgColor) {
         fjTableView.fj_view_bgColor = bgColor;
     }
     
+    // 初始化内部变量
     fjTableView.innerDataSource = [[NSMutableArray alloc] init];
     
+    // 返回FJTableView实例
     return fjTableView;
     
 }
@@ -212,6 +230,21 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 
 // 重新刷新数据源
 - (void)refresh {
+    
+    // Check DataSource
+    if (_innerDataSource != nil && [_innerDataSource count]) {
+        id datasource = [_innerDataSource objectAtIndex:0];
+        if([datasource isKindOfClass:[FJMultiDataSource class]]){
+            _innerSectionEnabled = YES;
+        }else{
+            _innerSectionEnabled = NO;
+        }
+    }else{
+        _innerSectionEnabled = NO;
+    }
+    
+    
+    // Reload
     [self.innerTableView reloadData];
 }
 
@@ -234,7 +267,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
  ***************************************/
 #pragma mark - Table view delegate & data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (_fj_allowMultiTableView) {
+    if (_innerSectionEnabled) {
         return [_innerDataSource count];
     }else{
         return 1;
@@ -242,23 +275,12 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    if (_fj_allowMultiTableView) {
+    if (_innerSectionEnabled) {
         FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
         return [self visibleCellsCount:multiDataSource.cellDataSources];
     }else{
         return [self visibleCellsCount:_innerDataSource];
     }
-}
-
-// 内部函数
-- (NSInteger)visibleCellsCount:(NSArray*)cellDataSources {
-    NSInteger cnt = 0;
-    for (FJCellDataSource *cell in cellDataSources) {
-        if (cell.disableVisible == NO) {
-            cnt++;
-        }
-    }
-    return cnt;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -333,31 +355,40 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
         return;
     }
     
-    if (fjCellData.tapEffect == FJ_CellTapEffect_None) {
-        
+    // 非多选的Editing模式，当TapEffect也不是默认，那么自动取消选择是为了不让Cell点击后选中。
+    if (_fj_editingStyle != FJ_CellEditingStyle_MultiSelection) {
+        if (fjCellData.tapEffect == FJ_CellTapEffect_None) {
+            
+        }else{
+            [tableView deselectRowAtIndexPath:indexPath animated:NO];
+        }
+    }
+    NSInteger row = [indexPath row];
+    NSInteger section = [indexPath section];
+    if (_fj_editingStyle == FJ_CellEditingStyle_MultiSelection) {
+        // 多重选择
+        fjCellData.multiSelected = YES;
+        _cellActionBlock == nil ? : _cellActionBlock(FJ_CellBlockType_CellMultiSelected, row, section, fjCellData);
     }else{
-        [tableView deselectRowAtIndexPath:indexPath animated:NO];
+        // 点击Cell
+        _cellActionBlock == nil ? : _cellActionBlock(FJ_CellBlockType_CellTapped, row, section, fjCellData);
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+    FJCellDataSource *fjCellData = [self getFJCellByIndexPath:indexPath];
+    // 越界处理
+    if (fjCellData == nil) {
+        return;
     }
     
     NSInteger row = [indexPath row];
     NSInteger section = [indexPath section];
     if (_fj_editingStyle == FJ_CellEditingStyle_MultiSelection) {
         // 多重选择
-        if (self.delegate && [self.delegate respondsToSelector:@selector(fj_tableViewDidMultiSelect:section:cellData:)]) {
-            [self.delegate fj_tableViewDidMultiSelect:row section:section cellData:fjCellData];
-        }
-        _cellActionBlock == nil ? : _cellActionBlock(FJ_CellBlockType_CellChecked, row, section, fjCellData);
-    }else{
-        // 点击Cell
-        if (self.delegate && [self.delegate respondsToSelector:@selector(fj_tableViewDidSelect:section:cellData:)]) {
-            [self.delegate fj_tableViewDidSelect:row section:section cellData:fjCellData];
-        }
-        _cellActionBlock == nil ? : _cellActionBlock(FJ_CellBlockType_CellTapped, row, section, fjCellData);
+        fjCellData.multiSelected = NO;
+        _cellActionBlock == nil ? : _cellActionBlock(FJ_CellBlockType_CellMultiSelected, row, section, fjCellData);
     }
-}
-
-- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"didDeselectRowAtIndexPath");
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -390,8 +421,8 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 -(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    // 判断Cell是否允许删除
-    if (self.fj_allowMultiTableView) {
+    // 先判断Cell是否控制允许删除选项
+    if (_innerSectionEnabled) {
         
         FJMultiDataSource *fjmds = [_innerDataSource objectAtIndex:[indexPath section]];
         FJCellDataSource *fjds = [fjmds.cellDataSources objectAtIndex:[indexPath row]];
@@ -407,28 +438,8 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
         }
     }
     
-    switch (_fj_editingStyle) {
-        case FJ_CellEditingStyle_Deletion:
-        {
-            return UITableViewCellEditingStyleDelete;
-        }
-            
-        case FJ_CellEditingStyle_Insert:
-        {
-            return UITableViewCellEditingStyleInsert;
-        }
-            
-        case FJ_CellEditingStyle_MultiSelection:
-        {
-            return UITableViewCellEditingStyleInsert | UITableViewCellEditingStyleDelete;
-        }
-        case FJ_CellEditingStyle_None:
-        default:
-        {
-            return UITableViewCellEditingStyleNone;
-        }
-    }
-    return UITableViewCellEditingStyleNone;
+    // 其次，返回Cell Editing Style
+    return _innerCellEditingStyle;
 }
 
 // 当TableView的Cell的编辑风格为UITableViewCellEditingStyleDelete 或 UITableViewCellEditingStyleInsert时，响应事件
@@ -443,75 +454,69 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     }
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // 删除(讲Cell的可视禁止参数调为YES)
-        if (_fj_cellDeletionPolicy == FJ_CellDeletion_Policy_Hidden) {
-            // 只是标记位设置隐藏
-            fjCellData.disableVisible = YES;
-            // 重新加载
-            [self.innerTableView reloadData];
-            
-        }else{
-            NSInteger row = [indexPath row];
-            NSInteger section = [indexPath section];
-            if (!self.fj_disableDeletionBeforeConfirm) {
-                // 从DataSource中删除
-                BOOL deleteSection = NO;
-                if (_fj_allowMultiTableView) {
+        
+        switch (_fj_cellDeletionPolicy) {
+            case FJ_CellDeletion_Policy_Remove:
+            {
+                NSInteger row = [indexPath row];
+                NSInteger section = [indexPath section];
+                if (self.fj_editingStyle == FJ_CellEditingStyle_Deletion_ExplicitWConfirm ||
+                    self.fj_editingStyle == FJ_CellEditingStyle_Deletion_SwipeWConfirm) {
                     
-                    FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
-                    [multiDataSource.cellDataSources removeObjectAtIndex:row];
-                    if ([multiDataSource.cellDataSources count] == 0) {
-                        [_innerDataSource removeObjectAtIndex:section];
-                        deleteSection = YES;
+                }else{
+                    // 从DataSource中删除
+                    BOOL deleteSection = NO;
+                    if (_innerSectionEnabled) {
+                        FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
+                        [multiDataSource.cellDataSources removeObjectAtIndex:row];
+                        if ([multiDataSource.cellDataSources count] == 0) {
+                            [_innerDataSource removeObjectAtIndex:section];
+                            deleteSection = YES;
+                        }
+                    }else{
+                        [_innerDataSource removeObjectAtIndex:row];
                     }
                     
-                }else{
-                    
-                    [_innerDataSource removeObjectAtIndex:row];
-                    
-                }
-                
-                // 删除动画
-                if (deleteSection) {
-                    [self.innerTableView deleteSections:[NSIndexSet indexSetWithIndex:section] withRowAnimation:_fj_cellAnimation];
-                }else{
-                    [self.innerTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:_fj_cellAnimation];
+                    // 删除动画
+                    if (deleteSection) {
+                        [self.innerTableView deleteSections:[NSIndexSet indexSetWithIndex:section] withRowAnimation:_fj_cellAnimation];
+                    }else{
+                        [self.innerTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:_fj_cellAnimation];
+                    }
                 }
             }
+                break;
+                
+            case FJ_CellDeletion_Policy_Hidden:
+            {
+                // 删除(将Cell的可视禁止参数调为YES)
+                // 只是标记位设置隐藏
+                fjCellData.disableVisible = YES;
+                // 重新加载
+                [self.innerTableView reloadData];
+            }
+                break;
         }
-        
-        // 标记后重新加载
-        // 没有动画，全部重新加载
-        // [self.tableView reloadData];
         
         // 删除代理方法
-        if (self.delegate && [self.delegate respondsToSelector:@selector(fj_tableViewDidSelect:section:cellData:)]) {
-            [self.delegate fj_tableViewDidSelect:row section:section cellData:fjCellData];
+        if (self.fj_editingStyle == FJ_CellEditingStyle_Deletion_ExplicitWConfirm ||
+            self.fj_editingStyle == FJ_CellEditingStyle_Deletion_SwipeWConfirm) {
+            _cellActionBlock == nil ? : _cellActionBlock(FJ_CellBlockType_CellDeletedWConfirm, row, section, fjCellData);
+        }else{
+            _cellActionBlock == nil ? : _cellActionBlock(FJ_CellBlockType_CellDeleted, row, section, fjCellData);
         }
-        _cellActionBlock == nil ? : _cellActionBlock(FJ_CellBlockType_CellDeleted, row, section, fjCellData);
-        
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // 插入
-        if (self.delegate && [self.delegate respondsToSelector:@selector(fj_tableViewDidInsertRow:section:cellData:)]) {
-            [self.delegate fj_tableViewDidInsertRow:row section:section cellData:fjCellData];
-        }
-        _cellActionBlock == nil ? : _cellActionBlock(FJ_CellBlockType_CellInterted, row, section, fjCellData);
+        _cellActionBlock == nil ? : _cellActionBlock(FJ_CellBlockType_CellInserted, row, section, fjCellData);
     }
 }
 
 // 返回当前Cell是否可以移动
 -(BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (_fj_allowMoveCell == NO) {
-        return NO;
-    }
-    
     FJCellDataSource *fjCellData = [self getFJCellByIndexPath:indexPath];
-    if (fjCellData == nil) {
-        return NO;
-    }
-    
-    return fjCellData.allowMoveCell;
+    BOOL allowMove = (_fj_editingStyle == FJ_CellEditingStyle_Move) && (fjCellData != nil) && fjCellData.allowMoveCell;
+    return allowMove;
 }
 
 // 执行移动操作
@@ -520,27 +525,28 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     // 交换DataSource的位置
     // NSLog(@"from %d to %d", (int)[fromIndexPath row], (int)[toIndexPath row]);
     // 交换CellDataSource
-    if (_fj_allowMultiTableView) {
+    if (_innerSectionEnabled) {
         
     }else{
         
         NSInteger fromIndex = [fromIndexPath row];
         NSInteger toIndex = [toIndexPath row];
-        
-        if (fromIndex == toIndex) {
-            return;
-        }else if(fromIndex < toIndex) {
-            FJCellDataSource *tempCellDataSource = [_innerDataSource objectAtIndex:fromIndex];
-            for (int i = (int)fromIndex; i < toIndex; i++) {
-                _innerDataSource[i] = _innerDataSource[i+1];
+        if (fromIndex != toIndex) {
+            if(fromIndex < toIndex) {
+                FJCellDataSource *tempCellDataSource = [_innerDataSource objectAtIndex:fromIndex];
+                for (int i = (int)fromIndex; i < toIndex; i++) {
+                    _innerDataSource[i] = _innerDataSource[i+1];
+                }
+                _innerDataSource[toIndex] = tempCellDataSource;
+            }else{
+                FJCellDataSource *tempCellDataSource = [_innerDataSource objectAtIndex:fromIndex];
+                for (int i = (int)fromIndex; i > toIndex; i--) {
+                    _innerDataSource[i] = _innerDataSource[i-1];
+                }
+                _innerDataSource[toIndex] = tempCellDataSource;
             }
-            _innerDataSource[toIndex] = tempCellDataSource;
-        }else{
-            FJCellDataSource *tempCellDataSource = [_innerDataSource objectAtIndex:fromIndex];
-            for (int i = (int)fromIndex; i > toIndex; i--) {
-                _innerDataSource[i] = _innerDataSource[i-1];
-            }
-            _innerDataSource[toIndex] = tempCellDataSource;
+            // Cell移动(从哪个位置移动到某个位置)
+            _cellActionBlock == nil ? : _cellActionBlock(FJ_CellBlockType_CellMoved, fromIndex, 0, _innerDataSource[toIndex]);
         }
         [self.innerTableView reloadData];
     }
@@ -564,7 +570,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 
 // Header View
 - (UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    if (!_fj_allowMultiTableView) {
+    if (!_innerSectionEnabled) {
         return nil;
     }
     FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
@@ -590,7 +596,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 
 // Header View Height
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (_fj_allowMultiTableView) {
+    if (_innerSectionEnabled) {
         FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
         if (multiDataSource.headerViewDataSource == nil) {
             return 0.0;
@@ -613,7 +619,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 #pragma mark - scroll delegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    if (self.delegate == nil && _cellScrollBlock == nil) {
+    if (_cellScrollBlock == nil) {
         return;
     }
     
@@ -621,9 +627,6 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     
     // NSLog(@"%f",scrollView.contentOffset.y);
     // 完全交由子类实现
-    if ([self.delegate respondsToSelector:@selector(fj_scrollViewDidScroll:)]) {
-        [self.delegate fj_scrollViewDidScroll:scrollView];
-    }
     _cellScrollBlock == nil ? : _cellScrollBlock(FJ_ScrollBlockType_Scroll, scrollView, 0, NO);
     
     CGFloat height = 0.0;
@@ -632,30 +635,18 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
         height = scrollView.contentOffset.y - _last_y;
         if (height > 0) {
             // 往下拉
-            if ([self.delegate respondsToSelector:@selector(fj_scrollView:down:)]) {
-                [self.delegate fj_scrollView:scrollView down:height];
-            }
             _cellScrollBlock == nil ? : _cellScrollBlock(FJ_ScrollBlockType_Scroll_Moving_Down_Height, scrollView, height, NO);
         }else if (height < 0) {
             // 往上拉
-            if ([self.delegate respondsToSelector:@selector(fj_scrollView:up:)]) {
-                [self.delegate fj_scrollView:scrollView up:-height];
-            }
             _cellScrollBlock == nil ? : _cellScrollBlock(FJ_ScrollBlockType_Scroll_Moving_Up_Height, scrollView, height, NO);
         }
     }else if(scrollView.contentOffset.y < _init_y){
         // 当小于第一临界值（表示开始进入下拉刷新准备状态）
         height = _init_y - scrollView.contentOffset.y;
-        if ([self.delegate respondsToSelector:@selector(fj_scrollViewRefreshingHeader:height:)]) {
-            [self.delegate fj_scrollViewRefreshingHeader:scrollView height:height];
-        }
         _cellScrollBlock == nil ? : _cellScrollBlock(FJ_ScrollBlockType_Scroll_RefreshingView_Up_Height, scrollView, height, NO);
         
     }else if (scrollView.contentOffset.y >= _end_y) {
         height = scrollView.contentOffset.y - _end_y;
-        if ([self.delegate respondsToSelector:@selector(fj_scrollViewLoadingMore:height:)]) {
-            [self.delegate fj_scrollViewLoadingMore:scrollView height:height];
-        }
         _cellScrollBlock == nil ? : _cellScrollBlock(FJ_ScrollBlockType_Scroll_LoadingView_Down_Height, scrollView, height, NO);
     }
     
@@ -664,30 +655,18 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    if ([self.delegate respondsToSelector:@selector(fj_scrollViewWillBeginDragging:)]) {
-        [self.delegate fj_scrollViewWillBeginDragging:scrollView];
-    }
     _cellScrollBlock == nil ? : _cellScrollBlock(FJ_ScrollBlockType_Scroll_Drag_Will_Begin, scrollView, 0, NO);
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    if ([self.delegate respondsToSelector:@selector(fj_scrollViewDidEndDragging:willDecelerate:)]) {
-        [self.delegate fj_scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
-    }
     _cellScrollBlock == nil ? : _cellScrollBlock(FJ_ScrollBlockType_Scroll_Drag_Did_End, scrollView, 0, decelerate);
 }
 
 - (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
-    if ([self.delegate respondsToSelector:@selector(fj_scrollViewWillBeginDecelerating:)]) {
-        [self.delegate fj_scrollViewWillBeginDecelerating:scrollView];
-    }
     _cellScrollBlock == nil ? : _cellScrollBlock(FJ_ScrollBlockType_Scroll_Decelerating_Will_Begin, scrollView, 0, NO);
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    if ([self.delegate respondsToSelector:@selector(fj_scrollViewDidEndDecelerating:)]) {
-        [self.delegate fj_scrollViewDidEndDecelerating:scrollView];
-    }
     _cellScrollBlock == nil ? : _cellScrollBlock(FJ_ScrollBlockType_Scroll_Decelerating_Did_End, scrollView, 0, NO);
 }
 
@@ -703,11 +682,6 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     NSIndexPath *indexPath = [self.innerTableView indexPathForCell:fjCell];
     NSInteger row = [indexPath row];
     NSInteger section = [indexPath section];
-    
-    if (self.delegate && [self.delegate respondsToSelector:@selector(fj_tableViewCustomAction:section:cellData:)]) {
-        
-        [self.delegate fj_tableViewCustomAction:row section:section cellData:cellDataSource];
-    }
     _cellActionBlock == nil ? : _cellActionBlock(FJ_CellBlockType_CellCustomizedTapped, row, section, cellDataSource);
 }
 
@@ -715,7 +689,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 - (void)fjheader_actionRespond:(id)viewDataSource from:(id)fjHeaderView {
     
     
-    if (self.fj_allowMultiTableView == NO) {
+    if (_innerSectionEnabled == NO) {
         return;
     }
     
@@ -730,9 +704,6 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
             continue;
         }
         if ([viewDataSource isEqual:hds]) {
-            if (self.delegate && [self.delegate respondsToSelector:@selector(fj_tableViewCustomAction:section:cellData:)]) {
-                [self.delegate fj_tableViewCustomAction:-1 section:section cellData:viewDataSource];
-            }
             _cellActionBlock == nil ? : _cellActionBlock(FJ_CellBlockType_CellCustomizedTapped, -1, section, viewDataSource);
             break;
         }
@@ -746,7 +717,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 - (void)extend:(__kindof FJCellDataSource*)cellData {
     [self.innerTableView beginUpdates];
     [cellData extend];
-    if (self.fj_allowMultiTableView) {
+    if (_innerSectionEnabled) {
         
         for (int i = 0; i < [_innerDataSource count]; i++) {
             FJMultiDataSource *fjMultuDataSource = [_innerDataSource objectAtIndex:i];
@@ -781,7 +752,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 - (void)collapse:(__kindof FJCellDataSource*)cellData {
     [self.innerTableView beginUpdates];
     [cellData collapse];
-    if (self.fj_allowMultiTableView) {
+    if (_innerSectionEnabled) {
         
         for (int i = 0; i < [_innerDataSource count]; i++) {
             FJMultiDataSource *fjMultuDataSource = [_innerDataSource objectAtIndex:i];
@@ -816,7 +787,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 - (void)autoExtendAndCollapse:(__kindof FJCellDataSource*)cellData {
     [self.innerTableView beginUpdates];
     [cellData autoExtendAndCollapse];
-    if (self.fj_allowMultiTableView) {
+    if (_innerSectionEnabled) {
         
         for (int i = 0; i < [_innerDataSource count]; i++) {
             FJMultiDataSource *fjMultuDataSource = [_innerDataSource objectAtIndex:i];
@@ -873,7 +844,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 // 滚动到某个FJCellDataSource
 - (void)scrollToCellDataSource:(__kindof FJCellDataSource*)cellDataSource position:(UITableViewScrollPosition)position animated:(BOOL)animated {
     
-    if (_fj_allowMultiTableView) {
+    if (_innerSectionEnabled) {
         for (int section = 0; section < [_innerDataSource count]; section++) {
             FJMultiDataSource *multiData = [_innerDataSource objectAtIndex:section];
             for (int row = 0; row < [multiData.cellDataSources count]; row++) {
@@ -913,6 +884,17 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 /******************************
  *           内部方法          *
  ******************************/
+// 计算DataSource中没有disabled的个数
+- (NSInteger)visibleCellsCount:(NSArray*)cellDataSources {
+    NSInteger cnt = 0;
+    for (FJCellDataSource *cell in cellDataSources) {
+        if (cell.disableVisible == NO) {
+            cnt++;
+        }
+    }
+    return cnt;
+}
+
 // 根据cellData获取实际对应到TableView的Row Index
 - (int)getVisibleIndex:(NSArray*)cellDataSources cellData:(__kindof FJCellDataSource*)cellData{
     for (int i = 0, j = -1; i < [cellDataSources count]; i++) {
@@ -958,7 +940,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 // 根据DataSource获得Cell
 - (id)cellForDataSource:(__kindof FJCellDataSource*)cellDataSource{
     
-    if (_fj_allowMultiTableView) {
+    if (_innerSectionEnabled) {
         
         for (int section = 0 ; section < [_innerDataSource count]; section++) {
             FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
@@ -982,7 +964,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 // 根据DataSource的类型获得Cell （若存在多个，仅返回第一个cell）
 - (id)cellForClass:(id)cellClass {
     
-    if (_fj_allowMultiTableView) {
+    if (_innerSectionEnabled) {
         
         for (int section = 0 ; section < [_innerDataSource count]; section++) {
             FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
@@ -1006,7 +988,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 - (NSMutableArray*)cellsForClass:(id)cellClass {
     NSMutableArray *ret = nil;
     
-    if (_fj_allowMultiTableView) {
+    if (_innerSectionEnabled) {
         for (int section = 0 ; section < [_innerDataSource count]; section++) {
             FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
             for (int i = 0, j = -1; i < [multiDataSource.cellDataSources count]; i++) {
@@ -1087,7 +1069,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 
 // 根据DataSource重新加载Cell
 - (void)reloadCellForDataSource:(__kindof FJCellDataSource*)cellDataSource {
-    if (_fj_allowMultiTableView) {
+    if (_innerSectionEnabled) {
         
         for (int section = 0; section < [_innerDataSource count]; section++) {
             FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
@@ -1108,7 +1090,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 - (void)reloadCellsForClass:(id)cellClass {
     
     NSMutableArray *indexPaths = nil;
-    if (_fj_allowMultiTableView) {
+    if (_innerSectionEnabled) {
         for (int section = 0 ; section < [_innerDataSource count]; section++) {
             FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
             for (int i = 0, j = -1; i < [multiDataSource.cellDataSources count]; i++) {
@@ -1155,7 +1137,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     
     NSInteger row = [indexPath row];
     NSInteger section = [indexPath section];
-    if (_fj_allowMultiTableView) {
+    if (_innerSectionEnabled) {
         
         if (section < 0 || section >= [_innerDataSource count]) {
             return nil;

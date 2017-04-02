@@ -29,7 +29,7 @@
 {
     self = [super init];
     if (self) {
-        self.cellHeight = 200.0;
+        self.cellHeight = 136.0;
     }
     return self;
 }

@@ -64,6 +64,9 @@
 - (void)collapse;
 - (void)autoExtendAndCollapse;
 
+// MultiSelect状态
+@property (nonatomic, assign) BOOL multiSelected;
+
 @end
 
 @protocol FJCellDataSource <NSObject>

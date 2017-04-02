@@ -14,5 +14,6 @@
 #import <FJTableView/FJCell.h>
 #import <FJTableView/FJHeaderView.h>
 #import <FJTableView/FJMultiDataSource.h>
+#import <FJTableView/NSMutableArray+FJTableView.h>
 
 #endif /* FJTableViewHeader_h */

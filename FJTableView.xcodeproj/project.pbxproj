@@ -24,6 +24,9 @@
 		1F693E421E8E866800629366 /* FeedsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F693E3A1E8E866800629366 /* FeedsCell.xib */; };
 		1F693E431E8E866800629366 /* FeedsHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F693E3C1E8E866800629366 /* FeedsHeaderView.m */; };
 		1F693E441E8E866800629366 /* FeedsHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F693E3D1E8E866800629366 /* FeedsHeaderView.xib */; };
+		1F7536C21E9127B800E17272 /* NSMutableArray+FJTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7536C11E9127B800E17272 /* NSMutableArray+FJTableView.m */; };
+		1F7536C51E91314000E17272 /* PageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7536C41E91314000E17272 /* PageTableViewController.m */; };
+		1F7536C81E91318900E17272 /* FJTableView+FJRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7536C71E91318900E17272 /* FJTableView+FJRefresh.m */; };
 		B70B3656FBAC61DA6BD7B6B6 /* Pods_FJTableView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82397FB8C0E96041D178498E /* Pods_FJTableView.framework */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +62,12 @@
 		1F693E3C1E8E866800629366 /* FeedsHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedsHeaderView.m; sourceTree = "<group>"; };
 		1F693E3D1E8E866800629366 /* FeedsHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FeedsHeaderView.xib; sourceTree = "<group>"; };
 		1F693E451E8E87B000629366 /* FJTableViewHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FJTableViewHeader.h; sourceTree = "<group>"; };
+		1F7536C01E9127B800E17272 /* NSMutableArray+FJTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+FJTableView.h"; sourceTree = "<group>"; };
+		1F7536C11E9127B800E17272 /* NSMutableArray+FJTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+FJTableView.m"; sourceTree = "<group>"; };
+		1F7536C31E91314000E17272 /* PageTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PageTableViewController.h; sourceTree = "<group>"; };
+		1F7536C41E91314000E17272 /* PageTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageTableViewController.m; sourceTree = "<group>"; };
+		1F7536C61E91318900E17272 /* FJTableView+FJRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FJTableView+FJRefresh.h"; sourceTree = "<group>"; };
+		1F7536C71E91318900E17272 /* FJTableView+FJRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "FJTableView+FJRefresh.m"; sourceTree = "<group>"; };
 		63E22D6027C5D9A48B382ABE /* Pods-FJTableView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FJTableView.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FJTableView/Pods-FJTableView.debug.xcconfig"; sourceTree = "<group>"; };
 		82397FB8C0E96041D178498E /* Pods_FJTableView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FJTableView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E434519A0D1DFBBA86999DCB /* Pods-FJTableView.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FJTableView.release.xcconfig"; path = "Pods/Target Support Files/Pods-FJTableView/Pods-FJTableView.release.xcconfig"; sourceTree = "<group>"; };
@@ -120,6 +129,10 @@
 				1F693E341E8E866800629366 /* BannerCell.xib */,
 				1F693E361E8E866800629366 /* DemoTableViewController.h */,
 				1F693E371E8E866800629366 /* DemoTableViewController.m */,
+				1F7536C31E91314000E17272 /* PageTableViewController.h */,
+				1F7536C41E91314000E17272 /* PageTableViewController.m */,
+				1F7536C61E91318900E17272 /* FJTableView+FJRefresh.h */,
+				1F7536C71E91318900E17272 /* FJTableView+FJRefresh.m */,
 				1F693E381E8E866800629366 /* FeedsCell.h */,
 				1F693E391E8E866800629366 /* FeedsCell.m */,
 				1F693E3A1E8E866800629366 /* FeedsCell.xib */,
@@ -142,6 +155,8 @@
 				1F693E2B1E8E862800629366 /* FJTableView.h */,
 				1F693E2C1E8E862800629366 /* FJTableView.m */,
 				1F693E2D1E8E862800629366 /* FJTableViewDef.h */,
+				1F7536C01E9127B800E17272 /* NSMutableArray+FJTableView.h */,
+				1F7536C11E9127B800E17272 /* NSMutableArray+FJTableView.m */,
 				1F693E451E8E87B000629366 /* FJTableViewHeader.h */,
 			);
 			path = Classes;
@@ -292,8 +307,11 @@
 				1F693E431E8E866800629366 /* FeedsHeaderView.m in Sources */,
 				1F693E401E8E866800629366 /* DemoTableViewController.m in Sources */,
 				1F693E231E8E851700629366 /* ViewController.m in Sources */,
+				1F7536C21E9127B800E17272 /* NSMutableArray+FJTableView.m in Sources */,
+				1F7536C51E91314000E17272 /* PageTableViewController.m in Sources */,
 				1F693E2F1E8E862800629366 /* FJHeaderView.m in Sources */,
 				1F693E301E8E862800629366 /* FJMultiDataSource.m in Sources */,
+				1F7536C81E91318900E17272 /* FJTableView+FJRefresh.m in Sources */,
 				1F693E311E8E862800629366 /* FJTableView.m in Sources */,
 				1F693E221E8E851700629366 /* main.m in Sources */,
 				1F693E3E1E8E866800629366 /* BannerCell.m in Sources */,

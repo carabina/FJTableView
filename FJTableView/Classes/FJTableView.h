@@ -15,28 +15,6 @@
 /*******************************
  *     FJTableView Data定义    *
  *******************************/
-
-/**
- * [Optional]
- * 是否带Section Header View
- * 默认NO
- */
-@property (nonatomic, assign) BOOL fj_allowMultiTableView;
-
-/**
- * [Optional] 
- * 是否可以编辑Cell
- * 默认NO
- */
-@property (nonatomic, assign) BOOL fj_allowEditing;
-
-/**
- * [Optional]
- * 是否可以移动Cell
- * 默认NO
- */
-@property (nonatomic, assign) BOOL fj_allowMoveCell;
-
 /**
  * [Optional] 
  * Cell编辑式样
@@ -49,7 +27,7 @@
  * Cell的分割属性
  * 默认UITableViewCellSeparatorStyleNone
  */
-@property (nonatomic, assign) UITableViewCellSeparatorStyle fj_cellSeperateType;
+@property (nonatomic, assign) UITableViewCellSeparatorStyle fj_cellSeperatorStyle;
 
 /**
  * [Optional]
@@ -86,14 +64,6 @@
  */
 @property (nonatomic, assign) FJ_CellDeletion_Policy fj_cellDeletionPolicy;
 
-/**
- * [Optional] 
- * 删除Cell前是否需要确认
- * 默认NO
- */
-@property (nonatomic, assign) BOOL fj_disableDeletionBeforeConfirm;
-
-
 /*************************
  *   生成 - Table/Data   *
  *************************/
@@ -101,7 +71,7 @@
 + (FJTableView*)defaultFJTableView;
 
 // 生成FJTableView（自定义）
-+ (FJTableView*)FJTableView:(CGRect)frame allowMultiStyle:(BOOL)allowMultiStyle editStyle:(FJ_CellEditingStyle)editStyle seperateType:(UITableViewCellSeparatorStyle)seperateType bgColor:(UIColor*)bgColor delegate:(id<FJTableViewDelegate>)delegate;
++ (FJTableView*)FJTableView:(CGRect)frame editStyle:(FJ_CellEditingStyle)editStyle seperatorStyle:(UITableViewCellSeparatorStyle)seperatorStyle bgColor:(UIColor*)bgColor;
 
 // 获取TableView
 - (UITableView *)tableView;
@@ -122,9 +92,6 @@
 /*************************
  *  回调 - Delegate/Block *
  *************************/
-// FJTableView Delegate
-@property (nonatomic, weak) id<FJTableViewDelegate> delegate;
-
 // 设置点击事件的Block
 - (void)setCellActionBlock:(CellActionBlock)cellActionBlock;
 

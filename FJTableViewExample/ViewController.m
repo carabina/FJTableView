@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "DemoTableViewController.h"
+#import "PageTableViewController.h"
 
 @interface ViewController ()
 
@@ -29,6 +30,11 @@
 - (IBAction)tapDemo:(id)sender {
     DemoTableViewController *demoVC = [[DemoTableViewController alloc] init];
     [self.navigationController pushViewController:demoVC animated:YES];
+}
+
+- (IBAction)tapPage:(id)sender {
+    PageTableViewController *pageVC = [[PageTableViewController alloc] init];
+    [self.navigationController pushViewController:pageVC animated:YES];
 }
 
 
