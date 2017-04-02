@@ -40,7 +40,7 @@ typedef enum :NSInteger {
     [self.view addSubview:self.tableView];
     
     // 初始化一些公共参数(背景色、NavBar等)
-    self.tableView.fj_editingStyle = FJ_CellEditingStyle_Move;
+    self.tableView.fj_editingStyle = FJ_CellEditingStyle_Deletion_Swipe;
     self.tableView.fj_cellDeletionPolicy = FJ_CellDeletion_Policy_Remove;
     self.tableView.fj_disableCellReuse = NO;
     self.tableView.fj_view_bgColor = nil;
@@ -164,6 +164,11 @@ typedef enum :NSInteger {
             }
                 
         }
+    }];
+    
+    
+    [self.tableView setCellScrollBlock:^(FJ_ScrollBlockType type, UIScrollView *scrollView, CGFloat height, BOOL willDecelerate) {
+        NSLog(@"type = %d, height = %f", (int)type, height);
     }];
 }
 
