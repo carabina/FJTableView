@@ -72,43 +72,46 @@ typedef NS_ENUM(NSInteger, FJ_ScrollBlockType) {
 
 @class FJCellDataSource;
 
-//#pragma mark - Deprecated
-//@protocol FJTableViewDelegate<NSObject>
-//
-//@optional
-//#pragma mark - Cell Action (代理)
-//// cell的点击事件
-//- (void)fj_tableViewDidSelect:(NSInteger)row section:(NSInteger)section cellData:(__kindof FJCellDataSource*)cellData DEPRECATED_MSG_ATTRIBUTE("Use the CellActionBlock.");
-//// cell 和 header view 的自定义响应事件
-//- (void)fj_tableViewCustomAction:(NSInteger)row section:(NSInteger)section cellData:(__kindof id)cellData DEPRECATED_MSG_ATTRIBUTE("Use the CellActionBlock.");
-//// cell的复选事件
-//- (void)fj_tableViewDidMultiSelect:(NSInteger)row section:(NSInteger)section cellData:(__kindof FJCellDataSource*)cellData DEPRECATED_MSG_ATTRIBUTE("Use the CellActionBlock.");
-//// cell的删除事件
-//- (void)fj_tableViewDidDeleteRow:(NSInteger)row section:(NSInteger)section cellData:(__kindof FJCellDataSource*)cellData DEPRECATED_MSG_ATTRIBUTE("Use the CellActionBlock.");
-//// cell的插入事件
-//- (void)fj_tableViewDidInsertRow:(NSInteger)row section:(NSInteger)section cellData:(__kindof FJCellDataSource*)cellData DEPRECATED_MSG_ATTRIBUTE("Use the CellActionBlock.");
-//
-//#pragma mark - ScrollView Action (代理)
-//// 重写滚动事件（完全交付子类完成自定义的处理方式）
-//- (void)fj_scrollViewDidScroll:(UIScrollView *)scrollView DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
-//// 重写往上滚动具体距离(进入Refreshing的状态)
-//- (void)fj_scrollViewRefreshingHeader:(UIScrollView *)scrollView height:(CGFloat)height DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
-//// 重写往下滚动具体距离（进入LoadingMore的状态）
-//- (void)fj_scrollViewLoadingMore:(UIScrollView *)scrollView height:(CGFloat)height DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
-//// 重写往上滚动(正常范围内，两个临界值之间的非重新加载和加载更多区域)
-//- (void)fj_scrollView:(UIScrollView *)scrollView up:(CGFloat)height DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
-//// 重写往下滚动(正常范围内，两个临界值之间的非重新加载和加载更多区域)
-//- (void)fj_scrollView:(UIScrollView *)scrollView down:(CGFloat)height DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
-//// 重写拖拽事件（开始拖拽）
-//- (void)fj_scrollViewWillBeginDragging:(UIScrollView *)scrollView DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
-//// 重写拖拽事件（结束拖拽）
-//- (void)fj_scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
-//// 重写开始减速事件
-//- (void)fj_scrollViewWillBeginDecelerating:(UIScrollView *)scrollView DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
-//// 重写结束减速事件
-//- (void)fj_scrollViewDidEndDecelerating:(UIScrollView *)scrollView DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
-//
-//@end
+/*
+#pragma mark - Deprecated
+@protocol FJTableViewDelegate<NSObject>
+
+@optional
+#pragma mark - Cell Action (代理)
+// cell的点击事件
+- (void)fj_tableViewDidSelect:(NSInteger)row section:(NSInteger)section cellData:(__kindof FJCellDataSource*)cellData DEPRECATED_MSG_ATTRIBUTE("Use the CellActionBlock.");
+// cell 和 header view 的自定义响应事件
+- (void)fj_tableViewCustomAction:(NSInteger)row section:(NSInteger)section cellData:(__kindof id)cellData DEPRECATED_MSG_ATTRIBUTE("Use the CellActionBlock.");
+// cell的复选事件
+- (void)fj_tableViewDidMultiSelect:(NSInteger)row section:(NSInteger)section cellData:(__kindof FJCellDataSource*)cellData DEPRECATED_MSG_ATTRIBUTE("Use the CellActionBlock.");
+// cell的删除事件
+- (void)fj_tableViewDidDeleteRow:(NSInteger)row section:(NSInteger)section cellData:(__kindof FJCellDataSource*)cellData DEPRECATED_MSG_ATTRIBUTE("Use the CellActionBlock.");
+// cell的插入事件
+- (void)fj_tableViewDidInsertRow:(NSInteger)row section:(NSInteger)section cellData:(__kindof FJCellDataSource*)cellData DEPRECATED_MSG_ATTRIBUTE("Use the CellActionBlock.");
+
+#pragma mark - ScrollView Action (代理)
+// 重写滚动事件（完全交付子类完成自定义的处理方式）
+- (void)fj_scrollViewDidScroll:(UIScrollView *)scrollView DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
+// 重写往上滚动具体距离(进入Refreshing的状态)
+- (void)fj_scrollViewRefreshingHeader:(UIScrollView *)scrollView height:(CGFloat)height DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
+// 重写往下滚动具体距离（进入LoadingMore的状态）
+- (void)fj_scrollViewLoadingMore:(UIScrollView *)scrollView height:(CGFloat)height DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
+// 重写往上滚动(正常范围内，两个临界值之间的非重新加载和加载更多区域)
+- (void)fj_scrollView:(UIScrollView *)scrollView up:(CGFloat)height DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
+// 重写往下滚动(正常范围内，两个临界值之间的非重新加载和加载更多区域)
+- (void)fj_scrollView:(UIScrollView *)scrollView down:(CGFloat)height DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
+// 重写拖拽事件（开始拖拽）
+- (void)fj_scrollViewWillBeginDragging:(UIScrollView *)scrollView DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
+// 重写拖拽事件（结束拖拽）
+- (void)fj_scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
+// 重写开始减速事件
+- (void)fj_scrollViewWillBeginDecelerating:(UIScrollView *)scrollView DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
+// 重写结束减速事件
+- (void)fj_scrollViewDidEndDecelerating:(UIScrollView *)scrollView DEPRECATED_MSG_ATTRIBUTE("Use the CellScrollBlock.");
+
+@end
+*/
+
 
 typedef void (^CellActionBlock)(FJ_CellBlockType type, NSInteger row, NSInteger section, __kindof FJCellDataSource* cellData);
 typedef void (^CellScrollBlock)(FJ_ScrollBlockType type, UIScrollView *scrollView, CGFloat height, BOOL willDecelerate);
