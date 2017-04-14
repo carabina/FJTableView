@@ -61,7 +61,6 @@
 
 - (void)setCellHeight:(float)cellHeight {
     _cellHeight = cellHeight;
-    _cellHeightOriginal = cellHeight;
 }
 
 - (void)setCellHeightExtended:(float)cellHeightExtended {
@@ -69,31 +68,20 @@
 }
 
 - (void)extend {
-    if (_cellHeightExtended > 0.0) {
-        _cellHeight = _cellHeightExtended;
-    }
     _extended = YES;
 }
 
 - (void)collapse {
-    if (_cellHeightOriginal > 0.0) {
-        _cellHeight = _cellHeightOriginal;
-    }
     _extended = NO;
 }
 
 - (void)autoExtendAndCollapse {
-    if (_cellHeightExtended > 0.0) {
+    if (!self.extended) {
+        [self extend];
         
-        if ((int)_cellHeight == (int)_cellHeightOriginal) {
-            [self extend];
-            
-        }else if ((int)_cellHeight == (int)_cellHeightExtended) {
-            [self collapse];
-        }
-        
+    }else {
+        [self collapse];
     }
 }
-
 
 @end

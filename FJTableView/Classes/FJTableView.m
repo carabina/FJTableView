@@ -399,7 +399,11 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
         return 0.0;
     }
     
-    return fjCellData.cellHeight;
+    if (fjCellData.extended) {
+        return fjCellData.cellHeightExtended;
+    }else{
+        return fjCellData.cellHeight;
+    }
 }
 
 // 是否可以删除、插入和选择
