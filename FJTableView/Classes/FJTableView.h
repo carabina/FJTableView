@@ -98,6 +98,12 @@
 // 设置滚动事件的Block
 - (void)setCellScrollBlock:(CellScrollBlock)cellScrollBlock;
 
+// 设置Indexes数组，return list of section titles to display in section index view (e.g. "ABCD...Z#")
+- (void)setIndexesBlock:(IndexesBlock)indexesBlock;
+
+// 设置点击Index返回Section位置，tell table which section corresponds to section title/index (e.g. "B",1))
+- (void)setIndexBlock:(IndexBlock)indexBlock;
+
 
 /*************************
  *  Operation - 伸缩、滚动 *

@@ -33,6 +33,9 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 // 滚动和点击的事件回调
 @property (nonatomic, copy) CellActionBlock cellActionBlock;
 @property (nonatomic, copy) CellScrollBlock cellScrollBlock;
+// Indexes和Index的事件回调
+@property (nonatomic, copy) IndexesBlock indexesBlock;
+@property (nonatomic, copy) IndexBlock   indexBlock;
 
 // scrollview滚动到最上方静止状态的临界值(contentOffset)
 @property (nonatomic, assign) CGFloat init_y;
@@ -260,6 +263,16 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 // 设置Cell Scroll Block
 - (void)setCellScrollBlock:(CellScrollBlock)cellScrollBlock {
     _cellScrollBlock = cellScrollBlock;
+}
+
+// 设置Indexes数组，return list of section titles to display in section index view (e.g. "ABCD...Z#")
+- (void)setIndexesBlock:(IndexesBlock)indexesBlock {
+    _indexesBlock = indexesBlock;
+}
+
+// 设置点击Index返回Section位置，tell table which section corresponds to section title/index (e.g. "B",1))
+- (void)setIndexBlock:(IndexBlock)indexBlock {
+    _indexBlock = indexBlock;
 }
 
 /***************************************
@@ -615,6 +628,23 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     // This will create a "invisible" footer
     return 0.0f;
+}
+
+// return list of section titles to display in section index view (e.g. "ABCD...Z#")
+- (nullable NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView {
+    
+    if (self.indexesBlock != nil) {
+        return self.indexesBlock(self);
+    }
+    return nil;
+}
+
+// tell table which section corresponds to section title/index (e.g. "B",1))
+- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
+    if (self.indexBlock != nil) {
+        return self.indexBlock(title, index, self);
+    }
+    return 0;
 }
 
 /***************************

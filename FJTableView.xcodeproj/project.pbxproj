@@ -27,6 +27,11 @@
 		1F7536C21E9127B800E17272 /* NSMutableArray+FJTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7536C11E9127B800E17272 /* NSMutableArray+FJTableView.m */; };
 		1F7536C51E91314000E17272 /* PageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7536C41E91314000E17272 /* PageTableViewController.m */; };
 		1F7536C81E91318900E17272 /* FJTableView+FJRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7536C71E91318900E17272 /* FJTableView+FJRefresh.m */; };
+		1FD00CBA1EAD97410040CA54 /* IndexesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FD00CB91EAD97410040CA54 /* IndexesTableViewController.m */; };
+		1FD00CBD1EAD9B930040CA54 /* IndexesHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FD00CBC1EAD9B930040CA54 /* IndexesHeaderView.m */; };
+		1FD00CBF1EAD9B9E0040CA54 /* IndexesHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1FD00CBE1EAD9B9E0040CA54 /* IndexesHeaderView.xib */; };
+		1FD00CC61EAD9BCA0040CA54 /* IndexesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FD00CC41EAD9BCA0040CA54 /* IndexesCell.m */; };
+		1FD00CC71EAD9BCA0040CA54 /* IndexesCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1FD00CC51EAD9BCA0040CA54 /* IndexesCell.xib */; };
 		B70B3656FBAC61DA6BD7B6B6 /* Pods_FJTableView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82397FB8C0E96041D178498E /* Pods_FJTableView.framework */; };
 /* End PBXBuildFile section */
 
@@ -68,6 +73,14 @@
 		1F7536C41E91314000E17272 /* PageTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageTableViewController.m; sourceTree = "<group>"; };
 		1F7536C61E91318900E17272 /* FJTableView+FJRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FJTableView+FJRefresh.h"; sourceTree = "<group>"; };
 		1F7536C71E91318900E17272 /* FJTableView+FJRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "FJTableView+FJRefresh.m"; sourceTree = "<group>"; };
+		1FD00CB81EAD97410040CA54 /* IndexesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IndexesTableViewController.h; sourceTree = "<group>"; };
+		1FD00CB91EAD97410040CA54 /* IndexesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IndexesTableViewController.m; sourceTree = "<group>"; };
+		1FD00CBB1EAD9B930040CA54 /* IndexesHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IndexesHeaderView.h; sourceTree = "<group>"; };
+		1FD00CBC1EAD9B930040CA54 /* IndexesHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IndexesHeaderView.m; sourceTree = "<group>"; };
+		1FD00CBE1EAD9B9E0040CA54 /* IndexesHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IndexesHeaderView.xib; sourceTree = "<group>"; };
+		1FD00CC31EAD9BCA0040CA54 /* IndexesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IndexesCell.h; sourceTree = "<group>"; };
+		1FD00CC41EAD9BCA0040CA54 /* IndexesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IndexesCell.m; sourceTree = "<group>"; };
+		1FD00CC51EAD9BCA0040CA54 /* IndexesCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IndexesCell.xib; sourceTree = "<group>"; };
 		63E22D6027C5D9A48B382ABE /* Pods-FJTableView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FJTableView.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FJTableView/Pods-FJTableView.debug.xcconfig"; sourceTree = "<group>"; };
 		82397FB8C0E96041D178498E /* Pods_FJTableView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FJTableView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E434519A0D1DFBBA86999DCB /* Pods-FJTableView.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FJTableView.release.xcconfig"; path = "Pods/Target Support Files/Pods-FJTableView/Pods-FJTableView.release.xcconfig"; sourceTree = "<group>"; };
@@ -139,6 +152,14 @@
 				1F693E3B1E8E866800629366 /* FeedsHeaderView.h */,
 				1F693E3C1E8E866800629366 /* FeedsHeaderView.m */,
 				1F693E3D1E8E866800629366 /* FeedsHeaderView.xib */,
+				1FD00CB81EAD97410040CA54 /* IndexesTableViewController.h */,
+				1FD00CB91EAD97410040CA54 /* IndexesTableViewController.m */,
+				1FD00CBB1EAD9B930040CA54 /* IndexesHeaderView.h */,
+				1FD00CBC1EAD9B930040CA54 /* IndexesHeaderView.m */,
+				1FD00CBE1EAD9B9E0040CA54 /* IndexesHeaderView.xib */,
+				1FD00CC31EAD9BCA0040CA54 /* IndexesCell.h */,
+				1FD00CC41EAD9BCA0040CA54 /* IndexesCell.m */,
+				1FD00CC51EAD9BCA0040CA54 /* IndexesCell.xib */,
 			);
 			path = FJTableViewExample;
 			sourceTree = "<group>";
@@ -240,8 +261,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1FD00CC71EAD9BCA0040CA54 /* IndexesCell.xib in Resources */,
 				1F693E201E8E851700629366 /* Main.storyboard in Resources */,
 				1F693E3F1E8E866800629366 /* BannerCell.xib in Resources */,
+				1FD00CBF1EAD9B9E0040CA54 /* IndexesHeaderView.xib in Resources */,
 				1F693E421E8E866800629366 /* FeedsCell.xib in Resources */,
 				1F693E441E8E866800629366 /* FeedsHeaderView.xib in Resources */,
 				1F693E1E1E8E851700629366 /* Assets.xcassets in Resources */,
@@ -264,7 +287,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		7F9F79517EA17F91387064DF /* [CP] Embed Pods Frameworks */ = {
@@ -306,10 +329,13 @@
 			files = (
 				1F693E431E8E866800629366 /* FeedsHeaderView.m in Sources */,
 				1F693E401E8E866800629366 /* DemoTableViewController.m in Sources */,
+				1FD00CBD1EAD9B930040CA54 /* IndexesHeaderView.m in Sources */,
 				1F693E231E8E851700629366 /* ViewController.m in Sources */,
 				1F7536C21E9127B800E17272 /* NSMutableArray+FJTableView.m in Sources */,
 				1F7536C51E91314000E17272 /* PageTableViewController.m in Sources */,
+				1FD00CBA1EAD97410040CA54 /* IndexesTableViewController.m in Sources */,
 				1F693E2F1E8E862800629366 /* FJHeaderView.m in Sources */,
+				1FD00CC61EAD9BCA0040CA54 /* IndexesCell.m in Sources */,
 				1F693E301E8E862800629366 /* FJMultiDataSource.m in Sources */,
 				1F7536C81E91318900E17272 /* FJTableView+FJRefresh.m in Sources */,
 				1F693E311E8E862800629366 /* FJTableView.m in Sources */,

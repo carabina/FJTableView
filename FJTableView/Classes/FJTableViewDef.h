@@ -70,7 +70,7 @@ typedef NS_ENUM(NSInteger, FJ_ScrollBlockType) {
     FJ_ScrollBlockType_Scroll_Decelerating_Did_End,
 };
 
-@class FJCellDataSource;
+@class FJCellDataSource, FJTableView;
 
 /*
 #pragma mark - Deprecated
@@ -115,5 +115,7 @@ typedef NS_ENUM(NSInteger, FJ_ScrollBlockType) {
 
 typedef void (^CellActionBlock)(FJ_CellBlockType type, NSInteger row, NSInteger section, __kindof FJCellDataSource* cellData);
 typedef void (^CellScrollBlock)(FJ_ScrollBlockType type, UIScrollView *scrollView, CGFloat height, BOOL willDecelerate);
+typedef NSArray*   (^IndexesBlock)(FJTableView *tableView);
+typedef NSUInteger (^IndexBlock)(NSString *title, NSUInteger index, FJTableView *tableView);
 
 #endif /* FJTableViewDef_h */

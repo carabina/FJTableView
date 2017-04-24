@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "DemoTableViewController.h"
 #import "PageTableViewController.h"
+#import "IndexesTableViewController.h"
 
 @interface ViewController ()
 
@@ -35,6 +36,11 @@
 - (IBAction)tapPage:(id)sender {
     PageTableViewController *pageVC = [[PageTableViewController alloc] init];
     [self.navigationController pushViewController:pageVC animated:YES];
+}
+
+- (IBAction)tapIndexes:(id)sender {
+    IndexesTableViewController *indexesVC = [[IndexesTableViewController alloc] init];
+    [self.navigationController pushViewController:indexesVC animated:YES];
 }
 
 
