@@ -3,6 +3,7 @@ use_frameworks!
 target "FJTableView” do
 
 pod 'Masonry'
+pod ‘FJTool/Array’
 
 # Example
 pod 'FJRefresh', :git => 'https://github.com/jeffnjut/FJRefresh.git'

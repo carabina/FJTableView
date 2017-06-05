@@ -75,6 +75,7 @@
     [self.tableView tableView].mj_header = header;
     [self.tableView tableView].mj_footer = footer;
     
+    /*
     CFRunLoopRef runLoop = CFRunLoopGetCurrent();
     CFStringRef runLoopMode = kCFRunLoopCommonModes;
     CFRunLoopObserverRef observer = CFRunLoopObserverCreateWithHandler
@@ -83,6 +84,7 @@
         NSLog(@"空闲.......");
     });
     CFRunLoopAddObserver(runLoop, observer, runLoopMode);
+    */
 }
 
 - (void)loadDataFirstPage {

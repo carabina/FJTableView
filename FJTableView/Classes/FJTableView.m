@@ -10,6 +10,7 @@
 #import "FJCell.h"
 #import "NSMutableArray+FJTableView.h"
 #import <Masonry/Masonry.h>
+#import <FJTool/NSArray+Operation.h>
 
 #define COLOR_F3F3F9 [UIColor colorWithRed:(243.0/255.0) green:(243.0/255.0) blue:(249.0/255.0) alpha:1.0]
 
@@ -236,7 +237,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     
     // Check DataSource
     if (_innerDataSource != nil && [_innerDataSource count]) {
-        id datasource = [_innerDataSource objectAtIndex:0];
+        id datasource = [_innerDataSource objectAtSafeIndex:0];
         if([datasource isKindOfClass:[FJMultiDataSource class]]){
             _innerSectionEnabled = YES;
         }else{
@@ -289,7 +290,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if (_innerSectionEnabled) {
-        FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
+        FJMultiDataSource *multiDataSource = [_innerDataSource objectAtSafeIndex:section];
         return [self visibleCellsCount:multiDataSource.cellDataSources];
     }else{
         return [self visibleCellsCount:_innerDataSource];
@@ -441,15 +442,15 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     // 先判断Cell是否控制允许删除选项
     if (_innerSectionEnabled) {
         
-        FJMultiDataSource *fjmds = [_innerDataSource objectAtIndex:[indexPath section]];
-        FJCellDataSource *fjds = [fjmds.cellDataSources objectAtIndex:[indexPath row]];
+        FJMultiDataSource *fjmds = [_innerDataSource objectAtSafeIndex:[indexPath section]];
+        FJCellDataSource *fjds = [fjmds.cellDataSources objectAtSafeIndex:[indexPath row]];
         if (fjds.allowDeletion == NO) {
             return UITableViewCellEditingStyleNone;
         }
         
     }else{
         
-        FJCellDataSource *fjds = [_innerDataSource objectAtIndex:[indexPath row]];
+        FJCellDataSource *fjds = [_innerDataSource objectAtSafeIndex:[indexPath row]];
         if (fjds.allowDeletion == NO) {
             return UITableViewCellEditingStyleNone;
         }
@@ -484,14 +485,14 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
                     // 从DataSource中删除
                     BOOL deleteSection = NO;
                     if (_innerSectionEnabled) {
-                        FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
-                        [multiDataSource.cellDataSources removeObjectAtIndex:row];
+                        FJMultiDataSource *multiDataSource = [_innerDataSource objectAtSafeIndex:section];
+                        [multiDataSource.cellDataSources removeObjectAtSafeIndex:row];
                         if ([multiDataSource.cellDataSources count] == 0) {
-                            [_innerDataSource removeObjectAtIndex:section];
+                            [_innerDataSource removeObjectAtSafeIndex:section];
                             deleteSection = YES;
                         }
                     }else{
-                        [_innerDataSource removeObjectAtIndex:row];
+                        [_innerDataSource removeObjectAtSafeIndex:row];
                     }
                     
                     // 删除动画
@@ -550,13 +551,13 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
         NSInteger toIndex = [toIndexPath row];
         if (fromIndex != toIndex) {
             if(fromIndex < toIndex) {
-                FJCellDataSource *tempCellDataSource = [_innerDataSource objectAtIndex:fromIndex];
+                FJCellDataSource *tempCellDataSource = [_innerDataSource objectAtSafeIndex:fromIndex];
                 for (int i = (int)fromIndex; i < toIndex; i++) {
                     _innerDataSource[i] = _innerDataSource[i+1];
                 }
                 _innerDataSource[toIndex] = tempCellDataSource;
             }else{
-                FJCellDataSource *tempCellDataSource = [_innerDataSource objectAtIndex:fromIndex];
+                FJCellDataSource *tempCellDataSource = [_innerDataSource objectAtSafeIndex:fromIndex];
                 for (int i = (int)fromIndex; i > toIndex; i--) {
                     _innerDataSource[i] = _innerDataSource[i-1];
                 }
@@ -590,7 +591,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     if (!_innerSectionEnabled) {
         return nil;
     }
-    FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
+    FJMultiDataSource *multiDataSource = [_innerDataSource objectAtSafeIndex:section];
     FJHeaderViewDataSource *headerData = multiDataSource.headerViewDataSource;
     NSString *viewName = nil;
     if ([headerData isKindOfClass:[FJHeaderViewDataSource class]]) {
@@ -614,7 +615,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 // Header View Height
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (_innerSectionEnabled) {
-        FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
+        FJMultiDataSource *multiDataSource = [_innerDataSource objectAtSafeIndex:section];
         if (multiDataSource.headerViewDataSource == nil) {
             return 0.0;
         }else{
@@ -732,7 +733,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     }
     
     for (int section = 0; section < [_innerDataSource count]; section++) {
-        FJMultiDataSource *fjmds = [_innerDataSource objectAtIndex:section];
+        FJMultiDataSource *fjmds = [_innerDataSource objectAtSafeIndex:section];
         id hds = fjmds.headerViewDataSource;
         if (hds == nil) {
             continue;
@@ -754,9 +755,9 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     if (_innerSectionEnabled) {
         
         for (int i = 0; i < [_innerDataSource count]; i++) {
-            FJMultiDataSource *fjMultuDataSource = [_innerDataSource objectAtIndex:i];
+            FJMultiDataSource *fjMultuDataSource = [_innerDataSource objectAtSafeIndex:i];
             for (int j = 0 ; j < [fjMultuDataSource.cellDataSources count] ; j++) {
-                FJCellDataSource *data = [fjMultuDataSource.cellDataSources objectAtIndex:j];
+                FJCellDataSource *data = [fjMultuDataSource.cellDataSources objectAtSafeIndex:j];
                 if ([data isEqual:cellData]) {
                     FJCell *fjCell = [self.innerTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:i]];
                     if ([fjCell respondsToSelector:@selector(extend)]) {
@@ -769,7 +770,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
         
     }else{
         for (int i = 0; i < [_innerDataSource count]; i++) {
-            FJCellDataSource *data = [_innerDataSource objectAtIndex:i];
+            FJCellDataSource *data = [_innerDataSource objectAtSafeIndex:i];
             if ([data isEqual:cellData]) {
                 FJCell *fjCell = [self.innerTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
                 if ([fjCell respondsToSelector:@selector(extend)]) {
@@ -789,9 +790,9 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     if (_innerSectionEnabled) {
         
         for (int i = 0; i < [_innerDataSource count]; i++) {
-            FJMultiDataSource *fjMultuDataSource = [_innerDataSource objectAtIndex:i];
+            FJMultiDataSource *fjMultuDataSource = [_innerDataSource objectAtSafeIndex:i];
             for (int j = 0 ; j < [fjMultuDataSource.cellDataSources count] ; j++) {
-                FJCellDataSource *data = [fjMultuDataSource.cellDataSources objectAtIndex:j];
+                FJCellDataSource *data = [fjMultuDataSource.cellDataSources objectAtSafeIndex:j];
                 if ([data isEqual:cellData]) {
                     FJCell *fjCell = [self.innerTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:i]];
                     if ([fjCell respondsToSelector:@selector(collapse)]) {
@@ -804,7 +805,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
         
     }else{
         for (int i = 0; i < [_innerDataSource count]; i++) {
-            FJCellDataSource *data = [_innerDataSource objectAtIndex:i];
+            FJCellDataSource *data = [_innerDataSource objectAtSafeIndex:i];
             if ([data isEqual:cellData]) {
                 FJCell *fjCell = [self.innerTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
                 if ([fjCell respondsToSelector:@selector(collapse)]) {
@@ -824,9 +825,9 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     if (_innerSectionEnabled) {
         
         for (int i = 0; i < [_innerDataSource count]; i++) {
-            FJMultiDataSource *fjMultuDataSource = [_innerDataSource objectAtIndex:i];
+            FJMultiDataSource *fjMultuDataSource = [_innerDataSource objectAtSafeIndex:i];
             for (int j = 0 ; j < [fjMultuDataSource.cellDataSources count] ; j++) {
-                FJCellDataSource *data = [fjMultuDataSource.cellDataSources objectAtIndex:j];
+                FJCellDataSource *data = [fjMultuDataSource.cellDataSources objectAtSafeIndex:j];
                 if ([data isEqual:cellData]) {
                     FJCell *fjCell = [self.innerTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:i]];
                     if (data.extended == YES) {
@@ -845,7 +846,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
         
     }else{
         for (int i = 0; i < [_innerDataSource count]; i++) {
-            FJCellDataSource *data = [_innerDataSource objectAtIndex:i];
+            FJCellDataSource *data = [_innerDataSource objectAtSafeIndex:i];
             if ([data isEqual:cellData]) {
                 FJCell *fjCell = [self.innerTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
                 if (data.extended == YES) {
@@ -880,9 +881,9 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     
     if (_innerSectionEnabled) {
         for (int section = 0; section < [_innerDataSource count]; section++) {
-            FJMultiDataSource *multiData = [_innerDataSource objectAtIndex:section];
+            FJMultiDataSource *multiData = [_innerDataSource objectAtSafeIndex:section];
             for (int row = 0; row < [multiData.cellDataSources count]; row++) {
-                FJCellDataSource *fjCellData = [multiData.cellDataSources objectAtIndex:row];
+                FJCellDataSource *fjCellData = [multiData.cellDataSources objectAtSafeIndex:row];
                 if ([fjCellData isEqual:cellDataSource]) {
                     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
                     [self.innerTableView scrollToRowAtIndexPath:indexPath atScrollPosition:position animated:animated];
@@ -892,7 +893,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
         }
     }else{
         for (int i = 0; i < [_innerDataSource count]; i++) {
-            FJCellDataSource *fjCellData = [_innerDataSource objectAtIndex:i];
+            FJCellDataSource *fjCellData = [_innerDataSource objectAtSafeIndex:i];
             if ([fjCellData isEqual:cellDataSource]) {
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
                 [self.innerTableView scrollToRowAtIndexPath:indexPath atScrollPosition:position animated:animated];
@@ -905,7 +906,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 // 滚动到第一个CellDataSource的类型
 - (void)scrollToTheFirstCellClass:(Class)dataSourceClass position:(UITableViewScrollPosition)position animated:(BOOL)animated {
     for (int i = 0; i < [_innerDataSource count]; i++) {
-        FJCellDataSource *cellDS = [_innerDataSource objectAtIndex:i];
+        FJCellDataSource *cellDS = [_innerDataSource objectAtSafeIndex:i];
         if ([cellDS isMemberOfClass:dataSourceClass]) {
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
             [self.innerTableView scrollToRowAtIndexPath:indexPath atScrollPosition:position animated:animated];
@@ -932,7 +933,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 // 根据cellData获取实际对应到TableView的Row Index
 - (int)getVisibleIndex:(NSArray*)cellDataSources cellData:(__kindof FJCellDataSource*)cellData{
     for (int i = 0, j = -1; i < [cellDataSources count]; i++) {
-        FJCellDataSource *ds = [cellDataSources objectAtIndex:i];
+        FJCellDataSource *ds = [cellDataSources objectAtSafeIndex:i];
         
         if (ds.disableVisible == NO) {
             j++;
@@ -948,7 +949,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 // 根据cellData的类型获取实际对应到第一个TableView的Row Index
 - (int)getVisibleIndex:(NSArray*)cellDataSources cellClass:(id)cellClass{
     for (int i = 0, j = -1; i < [cellDataSources count]; i++) {
-        FJCellDataSource *ds = [cellDataSources objectAtIndex:i];
+        FJCellDataSource *ds = [cellDataSources objectAtSafeIndex:i];
         
         if (ds.disableVisible == NO) {
             j++;
@@ -977,7 +978,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     if (_innerSectionEnabled) {
         
         for (int section = 0 ; section < [_innerDataSource count]; section++) {
-            FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
+            FJMultiDataSource *multiDataSource = [_innerDataSource objectAtSafeIndex:section];
             int row = [self getVisibleIndex:multiDataSource.cellDataSources cellData:cellDataSource];
             if (row != NOT_FOUND_INDEX) {
                 return [self cellForRow:row section:section];
@@ -1001,7 +1002,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     if (_innerSectionEnabled) {
         
         for (int section = 0 ; section < [_innerDataSource count]; section++) {
-            FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
+            FJMultiDataSource *multiDataSource = [_innerDataSource objectAtSafeIndex:section];
             int row = [self getVisibleIndex:multiDataSource.cellDataSources cellClass:cellClass];
             if (row != NOT_FOUND_INDEX) {
                 return [self cellForRow:row section:section];
@@ -1024,9 +1025,9 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     
     if (_innerSectionEnabled) {
         for (int section = 0 ; section < [_innerDataSource count]; section++) {
-            FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
+            FJMultiDataSource *multiDataSource = [_innerDataSource objectAtSafeIndex:section];
             for (int i = 0, j = -1; i < [multiDataSource.cellDataSources count]; i++) {
-                FJCellDataSource *ds = [multiDataSource.cellDataSources objectAtIndex:i];
+                FJCellDataSource *ds = [multiDataSource.cellDataSources objectAtSafeIndex:i];
                 if (ds.disableVisible == NO) {
                     j++;
                 }
@@ -1044,7 +1045,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
         }
     }else{
         for (int i = 0, j = -1; i < [_innerDataSource count]; i++) {
-            FJCellDataSource *ds = [_innerDataSource objectAtIndex:i];
+            FJCellDataSource *ds = [_innerDataSource objectAtSafeIndex:i];
             if (ds.disableVisible == NO) {
                 j++;
             }
@@ -1065,13 +1066,13 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 
 // 根据Index获得DataSource
 - (id)dataSourceForRow:(NSInteger)row {
-    return [_innerDataSource objectAtIndex:row];
+    return [_innerDataSource objectAtSafeIndex:row];
 }
 
 // 根据DataSource的类型获得DataSource （若存在多个，仅返回第一个DataSource）
 - (id)dataSourceForClass:(id)cellClass {
     for (int i = 0; i < [_innerDataSource count]; i++) {
-        FJCellDataSource *ds = [_innerDataSource objectAtIndex:i];
+        FJCellDataSource *ds = [_innerDataSource objectAtSafeIndex:i];
         if ([ds isMemberOfClass:cellClass]) {
             return ds;
         }
@@ -1083,7 +1084,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 - (NSMutableArray*)dataSourcesForClass:(id)cellClass {
     NSMutableArray *ret = nil;
     for (int i = 0; i < [_innerDataSource count]; i++) {
-        FJCellDataSource *ds = [_innerDataSource objectAtIndex:i];
+        FJCellDataSource *ds = [_innerDataSource objectAtSafeIndex:i];
         if ([ds isMemberOfClass:cellClass]) {
             if (!ret) {
                 ret = [[NSMutableArray alloc] init];
@@ -1106,7 +1107,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     if (_innerSectionEnabled) {
         
         for (int section = 0; section < [_innerDataSource count]; section++) {
-            FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
+            FJMultiDataSource *multiDataSource = [_innerDataSource objectAtSafeIndex:section];
             int row = [self getVisibleIndex:multiDataSource.cellDataSources cellData:cellDataSource];
             if (row != NOT_FOUND_INDEX) {
                 [self reloadCellForRow:row section:section];
@@ -1126,9 +1127,9 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
     NSMutableArray *indexPaths = nil;
     if (_innerSectionEnabled) {
         for (int section = 0 ; section < [_innerDataSource count]; section++) {
-            FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
+            FJMultiDataSource *multiDataSource = [_innerDataSource objectAtSafeIndex:section];
             for (int i = 0, j = -1; i < [multiDataSource.cellDataSources count]; i++) {
-                FJCellDataSource *ds = [multiDataSource.cellDataSources objectAtIndex:i];
+                FJCellDataSource *ds = [multiDataSource.cellDataSources objectAtSafeIndex:i];
                 if (ds.disableVisible == NO) {
                     j++;
                 }
@@ -1144,7 +1145,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
         }
     }else{
         for (int i = 0, j = -1; i < [_innerDataSource count]; i++) {
-            FJCellDataSource *ds = [_innerDataSource objectAtIndex:i];
+            FJCellDataSource *ds = [_innerDataSource objectAtSafeIndex:i];
             if (ds.disableVisible == NO) {
                 j++;
             }
@@ -1177,7 +1178,7 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
             return nil;
         }
         
-        FJMultiDataSource *multiDataSource = [_innerDataSource objectAtIndex:section];
+        FJMultiDataSource *multiDataSource = [_innerDataSource objectAtSafeIndex:section];
         if (row < 0 || row >= [multiDataSource.cellDataSources count]) {
             return nil;
         }
@@ -1199,12 +1200,12 @@ if (target.delegate && [target.delegate respondsToSelector:@selector(fjheader_ac
 // 获取第row个非disableVisible的Cell
 - (__kindof FJCellDataSource*)getVisibleCell:(NSArray*)cellDataSources row:(NSInteger)row {
     for (int i = 0, j = -1; i < [cellDataSources count]; i++) {
-        FJCellDataSource *fjCellData = [cellDataSources objectAtIndex:i];
+        FJCellDataSource *fjCellData = [cellDataSources objectAtSafeIndex:i];
         if (fjCellData.disableVisible == NO) {
             j++;
         }
         if (row == j) {
-            return [cellDataSources objectAtIndex:i];
+            return [cellDataSources objectAtSafeIndex:i];
         }
     };
     return nil;

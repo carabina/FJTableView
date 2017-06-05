@@ -9,6 +9,7 @@
 #import "NSMutableArray+FJTableView.h"
 #import "FJCell.h"
 #import "FJMultiDataSource.h"
+#import <FJTool/NSArray+Operation.h>
 
 @implementation NSMutableArray (FJTableView)
 
@@ -18,7 +19,7 @@
     if ([self count] == 0) {
         return;
     }
-    id ds = [self objectAtIndex:0];
+    id ds = [self objectAtSafeIndex:0];
     if ([ds isKindOfClass:[FJCellDataSource class]]) {
         
         [self removeObject:dataSource];
@@ -48,7 +49,7 @@
     if ([self count] == 0) {
         return;
     }
-    id ds = [self objectAtIndex:0];
+    id ds = [self objectAtSafeIndex:0];
     if ([ds isKindOfClass:[FJCellDataSource class]]) {
        
         NSUInteger index = [self indexOfObject:aDataSource];

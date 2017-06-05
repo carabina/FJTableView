@@ -9,6 +9,6 @@ Pod::Spec.new do |s|
     s.source       = {:git => 'https://github.com/jeffnjut/FJTableView.git', :tag => s.version}
     s.source_files = 'FJTableView/**/*.{h,m}'
     s.dependency     'Masonry'
+    s.dependency     'FJTool'
     s.requires_arc = true
-    s.resources    = "FJTableView/classes/**/*.{storyboard,xcassets,xib,png,json}"
 end
